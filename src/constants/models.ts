@@ -1,7 +1,6 @@
 import type { ModelInfo } from '@/types/llm';
 
 export const MODELS: ModelInfo[] = [
-  { id: 'claude-4.7-opus',    label: 'Claude 4.7 Opus',    family: 'claude' },
   { id: 'claude-4.6-sonnet',  label: 'Claude 4.6 Sonnet',  family: 'claude' },
   { id: 'gemini-3.1-pro',     label: 'Gemini 3.1 Pro',     family: 'gemini' },
   { id: 'qwen3.7-max',        label: 'Qwen 3.7 Max',       family: 'qwen' },
@@ -13,7 +12,7 @@ export const MODELS: ModelInfo[] = [
   { id: 'MiniMax-M2.7',       label: 'MiniMax M2.7',       family: 'minimax' },
 ];
 
-export const DEFAULT_JUDGE_MODEL = 'claude-4.7-opus';
+export const DEFAULT_JUDGE_MODEL = 'claude-4.6-sonnet';
 
 export const MODEL_BY_ID: Record<string, ModelInfo> =
   Object.fromEntries(MODELS.map(m => [m.id, m]));

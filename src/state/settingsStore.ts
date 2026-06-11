@@ -23,14 +23,25 @@ function loadInitial(): Settings {
   } catch {
     // ignore
   }
+  const validIds = new Set(MODELS.map((m) => m.id));
+  // 已下线的模型 ID 从已存的设置中清掉，避免拿到不可用的模型
+  const sanitizedSelected = (stored.defaultSelectedModels ?? []).filter((id) =>
+    validIds.has(id)
+  );
+  const sanitizedJudge =
+    stored.defaultJudgeModel && validIds.has(stored.defaultJudgeModel)
+      ? stored.defaultJudgeModel
+      : DEFAULT_JUDGE_MODEL;
   return {
     apiKey: stored.apiKey ?? fromEnvKey,
     apiBaseUrl: stored.apiBaseUrl ?? fromEnvBase,
     defaultWritingPrompt: stored.defaultWritingPrompt ?? DEFAULT_WRITING_PROMPT,
     defaultJudgePrompt: stored.defaultJudgePrompt ?? DEFAULT_JUDGE_PROMPT,
     defaultSelectedModels:
-      stored.defaultSelectedModels ?? MODELS.slice(0, 3).map((m) => m.id),
-    defaultJudgeModel: stored.defaultJudgeModel ?? DEFAULT_JUDGE_MODEL,
+      sanitizedSelected.length > 0
+        ? sanitizedSelected
+        : MODELS.slice(0, 3).map((m) => m.id),
+    defaultJudgeModel: sanitizedJudge,
     defaultAnonymize: stored.defaultAnonymize ?? true,
   };
 }
