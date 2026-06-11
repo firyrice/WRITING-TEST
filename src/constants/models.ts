@@ -11,7 +11,6 @@ export const MODELS: ModelInfo[] = [
   { id: 'glm-5.1',            label: 'GLM 5.1',            family: 'glm' },
   { id: 'kimi-k2.6',          label: 'Kimi K2.6',          family: 'kimi' },
   { id: 'MiniMax-M2.7',       label: 'MiniMax M2.7',       family: 'minimax' },
-  { id: 'mimo-v2.5-pro',      label: 'MiMo V2.5 Pro',      family: 'mimo' },
 ];
 
 export const DEFAULT_JUDGE_MODEL = 'claude-4.7-opus';
