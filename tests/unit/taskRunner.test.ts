@@ -44,7 +44,7 @@ describe('TaskRunner.runWriting', () => {
   });
 
   it('moves status to writing_done after all candidates settle', async () => {
-    (streamWriting as any).mockImplementation(async ({ onChunk, modelId }) => {
+    (streamWriting as any).mockImplementation(async ({ onChunk, modelId }: { onChunk: (s: string) => void; modelId: string }) => {
       onChunk('hello-' + modelId);
       return { fullText: 'hello-' + modelId };
     });
@@ -57,7 +57,7 @@ describe('TaskRunner.runWriting', () => {
   });
 
   it('marks failed candidate but still reaches writing_done', async () => {
-    (streamWriting as any).mockImplementation(async ({ modelId, onChunk }) => {
+    (streamWriting as any).mockImplementation(async ({ modelId, onChunk }: { modelId: string; onChunk: (s: string) => void }) => {
       if (modelId === 'm1') throw new Error('boom');
       onChunk('ok');
       return { fullText: 'ok' };
@@ -108,7 +108,7 @@ describe('TaskRunner.runJudging', () => {
   });
 
   it('streams the judge response and marks task done', async () => {
-    (streamJudging as any).mockImplementation(async ({ onChunk }) => {
+    (streamJudging as any).mockImplementation(async ({ onChunk }: { onChunk: (s: string) => void }) => {
       onChunk('# 报告\n');
       onChunk('内容');
       return { fullText: '# 报告\n内容' };
