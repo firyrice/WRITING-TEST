@@ -12,7 +12,7 @@ export async function streamChat(
 ): Promise<{ fullText: string }> {
   const { modelId, messages, apiKey, baseUrl, signal, onChunk } = opts;
 
-  const url = `${stripTrailingSlash(baseUrl)}/chat/completions`;
+  const url = `${normalizeBaseUrl(baseUrl)}/chat/completions`;
   const resp = await fetch(url, {
     method: 'POST',
     signal,
@@ -29,7 +29,8 @@ export async function streamChat(
 
   if (!resp.ok) {
     const bodyText = await safeReadText(resp);
-    throw new LLMError(modelId, resp.status, bodyText.slice(0, 500));
+    const detail = bodyText.slice(0, 500) || `(empty body) url=${url}`;
+    throw new LLMError(modelId, resp.status, detail);
   }
   if (!resp.body) {
     throw new LLMError(modelId, resp.status, 'no response body for stream');
@@ -89,7 +90,12 @@ export function streamJudging(args: {
   });
 }
 
-function stripTrailingSlash(s: string): string {
+function normalizeBaseUrl(s: string): string {
+  // 在浏览器中：明文 http:// 直连会触发 mixed content / CORS / 防火墙问题。
+  // 自动改写为同源反代路径 /api/v1（Vite dev 反代到 llmapi.bilibili.co）
+  if (typeof window !== 'undefined' && /^http:\/\//i.test(s)) {
+    s = '/api/v1';
+  }
   return s.endsWith('/') ? s.slice(0, -1) : s;
 }
 
