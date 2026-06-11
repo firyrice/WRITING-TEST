@@ -19,6 +19,13 @@ export default defineConfig({
         target: 'http://llmapi.bilibili.co',
         changeOrigin: true,
         rewrite: (p) => p.replace(/^\/api/, ''),
+        configure: (proxy) => {
+          // Gateway 看到 Origin/Referer 就 403，剥掉
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.removeHeader('origin');
+            proxyReq.removeHeader('referer');
+          });
+        },
       },
     },
   },
